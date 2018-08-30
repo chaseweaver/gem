@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/chilts/sid"
 	"github.com/chyeh/pubip"
@@ -14,9 +15,11 @@ import (
 
 // Client contains vairables used for html page
 type Client struct {
-	ClientID string
-	ClientIP string
-	Text     string
+	ClientID  string
+	ClientIP  string
+	Text      string
+	Encrypted string
+	Decrypted string
 }
 
 func main() {
@@ -41,10 +44,26 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	// Generate ClientID
+	ID := sid.Id()
+
+	// Create byte data from key
+	key := []byte(createHash(ID))
+
+	pt := fmt.Sprintf("%v", time.Now())
+
+	// Encrpyt text with key
+	en := encryptAES(key, pt)
+
+	de := decryptAES([]byte(createHash("1LF_u0Xx4mX-0muP9Tk9edd")), en)
+
 	// Execute template and with variables
 	err = t.Execute(w, Client{
-		ClientID: sid.Id(),
-		ClientIP: fmt.Sprintf("%v", ip),
+		ClientID:  ID,
+		ClientIP:  fmt.Sprintf("%v", ip),
+		Text:      pt,
+		Encrypted: en,
+		Decrypted: de,
 	})
 	if err != nil {
 		log.Print(err)

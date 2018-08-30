@@ -24,10 +24,21 @@
 					<h2>Client IP</h2>
 					<h3>{{.ClientIP}}</h3>
 				</block>
+				<block>
+					<h2>Plaintext</h2>
+					<h3>{{.Text}}</h3>
+				</block>
+				<block>
+					<h2>Encrypted</h2>
+					<h3>{{.Encrypted}}</h3>
+				</block>
+				<block>
+					<h2>Decrypted (w/ invalid key)</h2>
+					<h3>{{.Decrypted}}</h3>
+				</block>
       </div>
       <div class='gocrypt-right-div'>
-        <plaintext-box>
-				</plaintext-box>
+        <plaintext-box></plaintext-box>
 			</div>
     </div>
   </body>
