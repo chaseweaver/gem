@@ -16,7 +16,7 @@ import (
 	"os"
 )
 
-func main() {
+func test() {
 
 	// Create reader for console input
 	reader := bufio.NewReader(os.Stdin)
