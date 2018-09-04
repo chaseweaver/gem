@@ -50,6 +50,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	// Create byte data from key
 	key := []byte(createHash(ID))
 
+	// Random time for testing
 	pt := fmt.Sprintf("%v", time.Now())
 
 	// Encrpyt text with key

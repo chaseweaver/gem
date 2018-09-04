@@ -39,15 +39,8 @@ html {
 .gocrypt-right-div {
 	width: 66vw;
 	height: 100vh;
-	display: inline-block;
-}
-
-.gocrypt-right-div>plaintext-box {
-	position: absolute;
-	margin: auto;
-	width: 60%;
-	height: 9%;
-	bottom: 5%;
+	display: flex;
+	flex-direction: column;
 }
 
 .gocrypt-left-div{
@@ -88,11 +81,10 @@ block>h3{
 	overflow-wrap: break-word;
 }
 
-plaintext-box{
+plaintext-div{
 	background-color:#FFF;
-	-webkit-box-shadow: 0px 3px 24px 1px rgba(0,0,0,0.15);
-	-moz-box-shadow: 0px 3px 24px 1px rgba(0,0,0,0.15);
-	box-shadow: 0px 3px 24px 1px rgba(0,0,0,0.15);
+	-webkit-box-shadow: 0px 4px 5px 2px rgba(0,0,0,0.25);
+	-moz-box-shadow: 0px 4px 5px 2px rgba(0,0,0,0.25);
+	box-shadow: 0px 4px 5px 2px rgba(0,0,0,0.25);
 	border-radius: 90px;
-	border-bottom-left-radius: 0px;
 }

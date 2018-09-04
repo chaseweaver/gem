@@ -3,7 +3,6 @@
 package main
 
 import (
-	"bufio"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/md5"
@@ -12,36 +11,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"log"
-	"os"
 )
-
-func test() {
-
-	// Create reader for console input
-	reader := bufio.NewReader(os.Stdin)
-
-	// Ask for text to encrypt
-	fmt.Print("Enter text to encrypt: ")
-	text, _ := reader.ReadString('\n')
-
-	// Ask for encryption key
-	fmt.Print("Enter key for encryption: ")
-	k, _ := reader.ReadString('\n')
-
-	// Create byte data from key
-	key := []byte(createHash(k))
-
-	// Encrpyt text with key
-	en := encryptAES(key, text)
-
-	// Decrypt text with key
-	de := decryptAES(key, en)
-
-	log.Println("Key", " => ", key)
-	log.Println("Enc", " => ", en)
-	log.Println("Dec", " => ", de)
-}
 
 // createHash(string)
 // Creates an hashed string from a key
