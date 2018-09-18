@@ -54,9 +54,9 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	pt := fmt.Sprintf("%v", time.Now())
 
 	// Encrpyt text with key
-	en := encryptAES(key, pt)
+	en := encryptAESMessage(key, pt)
 
-	de := decryptAES([]byte(createHash("1LF_u0Xx4mX-0muP9Tk9edd")), en)
+	de := decryptAESMessage([]byte(createHash("1LF_u0Xx4mX-0muP9Tk9edd")), en)
 
 	// Execute template and with variables
 	err = t.Execute(w, Client{
