@@ -25,36 +25,36 @@ html {
   background: #F7F8FB;
 }
 
-.gocrypt-container {
+.gem-container {
   transition: .5s;
   height: 100vh;
   display: flex;
 }
 
-.gocrypt-left-div,
-.gocrypt-right-div {
+.gem-left-div,
+.gem-right-div {
 	margin: auto;
 }
 
-.gocrypt-right-div {
+.gem-right-div {
 	width: 66vw;
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
 }
 
-.gocrypt-left-div{
+.gem-left-div{
 	width: 34vw;
 	height: 100vh;
 }
 
-.gocrypt-left-div>h1{
+.gem-left-div>h1{
 	color: #6d6d6d;
 	font-weight: 400;
 	padding-left: 20%;
 }
 
-.gocrypt-left-div>h2{
+.gem-left-div>h2{
 	color: #8b8b8b;
 	font-size: 12pt;
 	font-weight: 400;
