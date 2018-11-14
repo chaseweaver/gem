@@ -26,7 +26,7 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 	return nil
 }
 
-func main() {
+func port() {
 	// process other flags
 	portFlag := flag.Int("port", 3000, "port to listen to")
 	hostFlag := flag.String("host", "localhost", "host to listen to")
