@@ -126,7 +126,7 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 			peer = formatConnection(l.protocol, p, l.port)
 		}
 
-		initListener(l.port, l.host, l.protocol, peer)
+		initListener(3001, "localhost", "tcp", peer)
 
 	case "send":
 		var input string
