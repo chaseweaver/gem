@@ -33,8 +33,8 @@ type (
 	}
 )
 
-func (l *listener) SetIP(ip string) {
-	l.IP = ip
+func (l *listener) SetIP(IP string) {
+	l.IP = IP
 }
 
 func (l *listener) SetPort(p string) {
@@ -74,12 +74,6 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 	return nil
 }
 
-// formatConnection
-// Formats a connection to be in the form of tcp://localhost:3001
-func formatConnection(protocol, IP string, port uint16) string {
-	return fmt.Sprintf("%v://%v:%v", protocol, IP, port)
-}
-
 // initListener
 // Initializes a listener on set Protocol://IP:Port and initializes peers
 func initListener(port uint16, host, protocol string, peers ...string) {
@@ -99,6 +93,7 @@ func initListener(port uint16, host, protocol string, peers ...string) {
 	l.net, _ = l.builder.Build()
 	go l.net.Listen()
 
+	// Initialize peer group
 	if len(peers) > 0 {
 		l.net.Bootstrap(peers...)
 	}
@@ -112,21 +107,26 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 		w.Close()
 
 	case "connect":
-		var p string
+		var peerIP string
 
 		// Unmarshal JSON string
-		if err = json.Unmarshal([]byte(m.Payload), &p); err != nil {
+		if err = json.Unmarshal([]byte(m.Payload), &peerIP); err != nil {
 			payload = err.Error()
 			return
 		}
 
-		// Load IP, Port
-		var peer string
-		if len(p) != 0 {
-			peer = formatConnection(l.protocol, p, l.port)
+		var port string
+		for i := 0; i < len(openPorts); i++ {
+			if isPortOpen(l.protocol, peerIP, openPorts[i]) {
+				l.SetPort(openPorts[i])
+				port = openPorts[i]
+				break
+			}
 		}
 
-		initListener(3001, "localhost", "tcp", peer)
+		i, _ := strconv.Atoi(port)
+		peer := network.FormatAddress(l.protocol, peerIP, uint16(i))
+		initListener(l.port, l.IP, l.protocol, peer)
 
 	case "send":
 		var input string

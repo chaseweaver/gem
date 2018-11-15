@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	w       *astilectron.Window
-	l       listener
-	appName string
-	builtAt string
+	w         *astilectron.Window
+	l         listener
+	appName   string
+	builtAt   string
+	openPorts = []string{"15", "23", "8444", "8484", "3000", "3001", "3002"}
 )
 
 func main() {
@@ -29,17 +30,31 @@ func main() {
 		},
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
-			ip, _ := pubip.NewMaster().Address()
+
+			// Sets host as outward IP of port 3000 as TCP
+			IP, _ := pubip.NewMaster().Address()
 			go func() {
-				if err := bootstrap.SendMessage(w, "ip", ip); err != nil {
+				if err := bootstrap.SendMessage(w, "ip", IP); err != nil {
 					return
 				}
 			}()
-
-			// Sets host as outward IP of port 3000 as TCP
-			l.SetIP(ip)
-			l.SetPort("3000")
+			l.SetIP(IP)
 			l.SetProtocol("tcp")
+
+			var port string
+			for i := 0; i < len(openPorts); i++ {
+				if isPortOpen(l.protocol, IP, openPorts[i]) {
+					l.SetPort(openPorts[i])
+					port = openPorts[i]
+					break
+				}
+			}
+
+			go func() {
+				if err := bootstrap.SendMessage(w, "port", port); err != nil {
+					return
+				}
+			}()
 			return nil
 		},
 		RestoreAssets: RestoreAssets,

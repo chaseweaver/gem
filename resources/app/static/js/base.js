@@ -3,6 +3,8 @@ document.addEventListener('astilectron-ready', function() {
 	astilectron.onMessage(function(message) {
 		if (message.name === 'ip') {
 			document.getElementById('ip').innerHTML = message.payload;
+		} else if (message.name === 'port') {
+			document.getElementById('port').innerHTML = message.payload;
 		} else if (message.name === 'receive') {
 			document.getElementById('message-box').value += message.payload;
 		}
@@ -10,7 +12,7 @@ document.addEventListener('astilectron-ready', function() {
 
 	document.getElementById('send').addEventListener('click', function() {
 		let msg = document.getElementById('content-box').value;
-		astilectron.sendMessage({name: 'send', msg});
+		astilectron.sendMessage({name: 'send', payload: msg});
 	});
 
 	document.getElementById('close').addEventListener('click', function() {
