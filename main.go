@@ -62,7 +62,7 @@ func main() {
 				BackgroundColor: astilectron.PtrStr("#efeff2"),
 				Frame:           astilectron.PtrBool(false),
 				Resizable:       astilectron.PtrBool(false),
-				HasShadow:       astilectron.PtrBool(false),
+				HasShadow:       astilectron.PtrBool(true),
 				Fullscreenable:  astilectron.PtrBool(false),
 				Center:          astilectron.PtrBool(true),
 				Height:          astilectron.PtrInt(600),

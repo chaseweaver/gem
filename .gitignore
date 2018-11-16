@@ -3,3 +3,4 @@ bind*
 releases
 resources/checksums.json
 vendor
+windows.syso
