@@ -78,20 +78,24 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 // Initializes a listener on set Protocol://IP:Port and initializes peers
 func initListener(port uint16, host, protocol string, peers ...string) {
 
-	// Generate Public and Private key pair
-	l.keys = ed25519.RandomKeyPair()
+	if isListening {
+		// Generate Public and Private key pair
+		l.keys = ed25519.RandomKeyPair()
 
-	opcode.RegisterMessageType(opcode.Opcode(1000), &messages.ChatMessage{})
-	l.builder = network.NewBuilder()
-	l.builder.SetKeys(l.keys)
-	l.builder.SetAddress(network.FormatAddress(protocol, host, port))
+		opcode.RegisterMessageType(opcode.Opcode(1000), &messages.ChatMessage{})
+		l.builder = network.NewBuilder()
+		l.builder.SetKeys(l.keys)
+		l.builder.SetAddress(network.FormatAddress(protocol, host, port))
 
-	// Register peer discovery plugin, custom chat plugin.
-	l.builder.AddPlugin(new(discovery.Plugin))
-	l.builder.AddPlugin(new(chatPlugin))
+		// Register peer discovery plugin, custom chat plugin.
+		l.builder.AddPlugin(new(discovery.Plugin))
+		l.builder.AddPlugin(new(chatPlugin))
 
-	l.net, _ = l.builder.Build()
-	go l.net.Listen()
+		l.net, _ = l.builder.Build()
+		go l.net.Listen()
+	}
+
+	isListening = false
 
 	// Initialize peer group
 	if len(peers) > 0 {
@@ -107,26 +111,23 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 		w.Close()
 
 	case "connect":
-		var peerIP string
+		var peer []string
 
 		// Unmarshal JSON string
-		if err = json.Unmarshal([]byte(m.Payload), &peerIP); err != nil {
+		if err = json.Unmarshal([]byte(m.Payload), &peer); err != nil {
 			payload = err.Error()
 			return
 		}
 
-		var port string
-		for i := 0; i < len(openPorts); i++ {
-			if isPortOpen(l.protocol, peerIP, openPorts[i]) {
-				l.SetPort(openPorts[i])
-				port = openPorts[i]
-				break
-			}
+		var ip, port string
+		if len(peer) == 2 {
+			ip = peer[0]
+			port = peer[1]
 		}
 
-		i, _ := strconv.Atoi(port)
-		peer := network.FormatAddress(l.protocol, peerIP, uint16(i))
-		initListener(l.port, l.IP, l.protocol, peer)
+		p, _ := strconv.Atoi(port)
+		peerAddress := network.FormatAddress(l.protocol, ip, uint16(p))
+		initListener(l.port, l.IP, l.protocol, peerAddress)
 
 	case "send":
 		var input string

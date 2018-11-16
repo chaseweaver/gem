@@ -1,18 +1,19 @@
 document.addEventListener('astilectron-ready', function() {
-
 	astilectron.onMessage(function(message) {
 		if (message.name === 'ip') {
-			document.getElementById('ip').innerHTML = message.payload;
+			document.getElementById('user-ip').innerHTML = 'IP: ' + message.payload;
 		} else if (message.name === 'port') {
-			document.getElementById('port').innerHTML = message.payload;
+			document.getElementById('user-port').innerHTML = 'Port: ' + message.payload;
 		} else if (message.name === 'receive') {
 			document.getElementById('message-box').value += message.payload;
 		}
 	});
 
-	document.getElementById('send').addEventListener('click', function() {
-		let msg = document.getElementById('content-box').value;
-		astilectron.sendMessage({name: 'send', payload: msg});
+	document.getElementById('content-box').addEventListener("keyup", function(event) {
+		event.preventDefault();
+		if (event.keyCode === 13) {
+			astilectron.sendMessage({name: 'send', payload: this.value});
+		}
 	});
 
 	document.getElementById('close').addEventListener('click', function() {
@@ -20,17 +21,15 @@ document.addEventListener('astilectron-ready', function() {
 	});
 
 	document.getElementById('connect').addEventListener('click', function() {
-		let ip = document.getElementById('ip-box').value;
-		astilectron.sendMessage({name: 'connect', payload: ip});
-	});
+		let ip = document.getElementById('peer-ip').value;
+		let port = document.getElementById('peer-port').value;
 
-	/*
-	document.getElementById('file').addEventListener('click', function() {
-		max = 0;
-		astilectron.showOpenDialog({properties: ['openFile', 'singleSelection'],
-			title: 'File to Encrypt/Decrypt'}, function(paths) {
-				astilectron.sendMessage({name: 'open-file', payload: paths[0]});
-		});
+		if (ip.length == 0) {
+			astilectron.showErrorBox("Error!", "Please enter a peer IP!");
+		} else if (port.length == 0) {
+			astilectron.showErrorBox("Error!", "Please enter a peer Port! (i.e. 3000)")
+		} else {
+			astilectron.sendMessage({name: 'connect', payload: [ip, port]});
+		} 
 	});
-	*/
 });

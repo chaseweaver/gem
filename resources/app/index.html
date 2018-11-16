@@ -14,25 +14,38 @@
 				<div class="logo-container">
 					<img src="static/img/gem-logo.svg"/>
 				</div>
-				<div class="item-list-container">
-					<p>GEM is a P2P, blockchain-based, end-to-end, encrypted chat client built using golang. To get started, exchange IP's and ports with another user. Encryption will happen automatically without any additional input. Happy Hacking.</p>
+				<div class="description">
+					<p>1. Give yourself a name</p>
+					<p>2. Enter Peer IP + Peer Port</p>
+					<p>3. Enter a cryptographic password</p>
+					<p>4. Enjoy!</p>
 				</div>
-				<div class="item-list-container row">
-					<div class="item">
-						<h1>IP Address</h1>
-						<h2 id="ip"></h2>
-					</div>
-					<div class="item">
-						<h1>Port</h1>
-						<h2 id="port"></h2>
-					</div>
+				<div class="inp-container">
+					<label for="inp" class="inp nickname">
+						<input type="text" id="nickname" placeholder="&nbsp;">
+						<span class="label">Nickname</span>
+						<span class="border"></span>
+					</label>
+					<label for="inp" class="inp ip">
+						<input type="text" id="peer-ip" placeholder="&nbsp;">
+						<span class="label">Peer IP</span>
+						<span class="border"></span>
+					</label>
+					<label for="inp" class="inp port">
+						<input type="text" id="peer-port" placeholder="&nbsp;">
+						<span class="label">Peer Port</span>
+						<span class="border"></span>
+					</label>
+					<div class="btn" id="connect">+</div>
+					<label for="inp" class="inp password">
+						<input type="text" id="password" placeholder="&nbsp;">
+						<span class="label">Password</span>
+						<span class="border"></span>
+					</label>
 				</div>
-				<div class="ip-container">
-					<input type="text" id="ip-box" class="ip-box" value="Client IP">
-				</div>
-				<div class="button-container">
-					<div class="button host" id="connect">Connect</div>
-					<div class="button join" id="send">Send</div>
+				<div class="info-container">
+					<p id="user-ip">&nbsp;</p>
+					<p id="user-port">&nbsp;</p>
 				</div>
 			</div>
 			<div class="frame-container-right">

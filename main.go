@@ -2,20 +2,21 @@ package main
 
 import (
 	"flag"
-
+	"fmt"
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	astilog "github.com/asticode/go-astilog"
+	"github.com/phayes/freeport"
 	"github.com/pkg/errors"
 	"github.com/thibran/pubip"
 )
 
 var (
-	w         *astilectron.Window
-	l         listener
-	appName   string
-	builtAt   string
-	openPorts = []string{"15", "23", "8444", "8484", "3000", "3001", "3002"}
+	w           *astilectron.Window
+	l           listener
+	appName     string
+	builtAt     string
+	isListening = true
 )
 
 func main() {
@@ -33,22 +34,17 @@ func main() {
 
 			// Sets host as outward IP of port 3000 as TCP
 			IP, _ := pubip.NewMaster().Address()
+			port, _ := freeport.GetFreePort()
+
+			l.SetIP(IP)
+			l.SetProtocol("tcp")
+			l.SetPort(fmt.Sprintf("%v", port))
+
 			go func() {
 				if err := bootstrap.SendMessage(w, "ip", IP); err != nil {
 					return
 				}
 			}()
-			l.SetIP(IP)
-			l.SetProtocol("tcp")
-
-			var port string
-			for i := 0; i < len(openPorts); i++ {
-				if isPortOpen(l.protocol, IP, openPorts[i]) {
-					l.SetPort(openPorts[i])
-					port = openPorts[i]
-					break
-				}
-			}
 
 			go func() {
 				if err := bootstrap.SendMessage(w, "port", port); err != nil {
@@ -63,14 +59,14 @@ func main() {
 			MessageHandler: messageHandler,
 			Options: &astilectron.WindowOptions{
 				Title:           astilectron.PtrStr("GEM : Go Encryption Messenger"),
-				BackgroundColor: astilectron.PtrStr("#f3f3f6"),
+				BackgroundColor: astilectron.PtrStr("#efeff2"),
 				Frame:           astilectron.PtrBool(false),
 				Resizable:       astilectron.PtrBool(false),
 				HasShadow:       astilectron.PtrBool(false),
 				Fullscreenable:  astilectron.PtrBool(false),
 				Center:          astilectron.PtrBool(true),
-				Height:          astilectron.PtrInt(480),
-				Width:           astilectron.PtrInt(650),
+				Height:          astilectron.PtrInt(600),
+				Width:           astilectron.PtrInt(900),
 			},
 		}},
 	}); err != nil {
