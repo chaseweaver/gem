@@ -16,6 +16,10 @@ body {
 	color:#555
 }
 
+input:focus, textarea:focus, select:focus {
+	outline: none;
+}
+
 .description {
 	line-height:30%;
 	padding-bottom:3%;
