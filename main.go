@@ -7,8 +7,6 @@ import (
 	astilog "github.com/asticode/go-astilog"
 	"github.com/pkg/errors"
 	"log"
-	"math/rand"
-	"time"
 )
 
 var (
@@ -32,15 +30,10 @@ func main() {
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
 
-			ip, err := outboundIP()
+			ip, port, err := outboundIP()
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			//portScanner()
-			rand.Seed(time.Now().Unix())
-			n := rand.Int() % len(openPorts)
-			port := openPorts[n]
 
 			l.SetIP(ip)
 			l.SetProtocol("tcp")

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/perlin-network/noise/crypto"
 	"strconv"
 
@@ -71,11 +70,11 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 		// Hash key from recieved password
 		key := []byte(createHash(password))
 		var dmsg string
-		dmsg, err := encryptMessage(msg.Message, key)
+		dmsg, err := decryptMessage(msg.Message, key)
 		if err != nil {
 			return err
 		}
-		bootstrap.SendMessage(w, "receive", fmt.Sprintf("<%s> %s", ctx.Client().ID.Address, dmsg))
+		bootstrap.SendMessage(w, "receive", dmsg)
 	}
 	return nil
 }
