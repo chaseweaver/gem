@@ -22,7 +22,7 @@ type (
 	}
 
 	listener struct {
-		IP       string
+		ip       string
 		port     uint16
 		host     string
 		protocol string
@@ -33,13 +33,12 @@ type (
 	}
 )
 
-func (l *listener) SetIP(IP string) {
-	l.IP = IP
+func (l *listener) SetIP(ip string) {
+	l.ip = ip
 }
 
-func (l *listener) SetPort(p string) {
-	i, _ := strconv.Atoi(p)
-	l.port = uint16(i)
+func (l *listener) SetPort(p int) {
+	l.port = uint16(p)
 }
 
 func (l *listener) SetHost(h string) {
@@ -69,7 +68,14 @@ func (l *listener) SetKeys(k *crypto.KeyPair) {
 func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 	switch msg := ctx.Message().(type) {
 	case *messages.ChatMessage:
-		bootstrap.SendMessage(w, "receive", fmt.Sprintf("<%s> %s", ctx.Client().ID.Address, msg.Message))
+		// Hash key from recieved password
+		key := []byte(createHash(password))
+		var dmsg string
+		dmsg, err := encryptMessage(msg.Message, key)
+		if err != nil {
+			return err
+		}
+		bootstrap.SendMessage(w, "receive", fmt.Sprintf("<%s> %s", ctx.Client().ID.Address, dmsg))
 	}
 	return nil
 }
@@ -78,24 +84,24 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 // Initializes a listener on set Protocol://IP:Port and initializes peers
 func initListener(port uint16, host, protocol string, peers ...string) {
 
-	if isListening {
-		// Generate Public and Private key pair
-		l.keys = ed25519.RandomKeyPair()
+	// Generate Public and Private key pair
+	l.keys = ed25519.RandomKeyPair()
 
-		opcode.RegisterMessageType(opcode.Opcode(1000), &messages.ChatMessage{})
-		l.builder = network.NewBuilder()
-		l.builder.SetKeys(l.keys)
-		l.builder.SetAddress(network.FormatAddress(protocol, host, port))
+	opcode.RegisterMessageType(opcode.Opcode(1000), &messages.ChatMessage{})
+	l.builder = network.NewBuilder()
+	l.builder.SetKeys(l.keys)
+	l.builder.SetAddress(network.FormatAddress(protocol, host, port))
 
-		// Register peer discovery plugin, custom chat plugin.
-		l.builder.AddPlugin(new(discovery.Plugin))
-		l.builder.AddPlugin(new(chatPlugin))
+	// Register peer discovery plugin, custom chat plugin.
+	l.builder.AddPlugin(new(discovery.Plugin))
+	l.builder.AddPlugin(new(chatPlugin))
 
-		l.net, _ = l.builder.Build()
-		go l.net.Listen()
+	var err error
+	l.net, err = l.builder.Build()
+	if err != nil {
+		return
 	}
-
-	isListening = false
+	go l.net.Listen()
 
 	// Initialize peer group
 	if len(peers) > 0 {
@@ -127,10 +133,13 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 
 		p, _ := strconv.Atoi(port)
 		peerAddress := network.FormatAddress(l.protocol, ip, uint16(p))
-		initListener(l.port, l.IP, l.protocol, peerAddress)
+
+		if len(peerAddress) > 0 {
+			l.net.Bootstrap(peerAddress)
+		}
 
 	case "send":
-		var input string
+		var input []string
 
 		// Unmarshal JSON string
 		if err = json.Unmarshal([]byte(m.Payload), &input); err != nil {
@@ -138,8 +147,21 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 			return
 		}
 
+		var msg, pwd string
+		if len(input) == 2 {
+			msg = input[0]
+			pwd = input[1]
+		}
+
+		password = pwd
+		key := []byte(createHash(pwd))
+		var emsg string
+		if emsg, err = encryptMessage(msg, key); err != nil {
+			payload = err.Error()
+		}
+
 		ctx := network.WithSignMessage(context.Background(), true)
-		l.net.Broadcast(ctx, &messages.ChatMessage{Message: input})
+		l.net.Broadcast(ctx, &messages.ChatMessage{Message: emsg})
 	}
 	return
 }

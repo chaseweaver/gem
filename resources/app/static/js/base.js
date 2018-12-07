@@ -14,13 +14,19 @@ document.addEventListener('astilectron-ready', function() {
 
 	document.getElementById('content-box').addEventListener('keyup', function(event) {
 		event.preventDefault();
-		if (event.keyCode === 13) {
-			let me = document.createElement('li');
-			me.className = 'me';
-			me.innerHTML = this.value;
-			document.getElementById('message-container').appendChild(me);
-			astilectron.sendMessage({name: 'send', payload: this.value});
-			this.value = '';
+		let pwd = document.getElementById('pwd').value;
+
+		if (pwd.length === 0 ) {
+			astilectron.showErrorBox('Error!', 'Please enter a password!');
+		} else {
+			if (event.keyCode === 13) {
+				let me = document.createElement('li');
+				me.className = 'me';
+				me.innerHTML = this.value;
+				document.getElementById('message-container').appendChild(me);
+				astilectron.sendMessage({name: 'send', payload: [this.value, pwd]});
+				this.value = '';
+			}
 		}
 	});
 
@@ -32,10 +38,10 @@ document.addEventListener('astilectron-ready', function() {
 		let ip = document.getElementById('peer-ip').value;
 		let port = document.getElementById('peer-port').value;
 
-		if (ip.length == 0) {
+		if (ip.length === 0) {
 			astilectron.showErrorBox('Error!', 'Please enter a peer IP!');
-		} else if (port.length == 0) {
-			astilectron.showErrorBox('Error!', 'Please enter a peer Port! (i.e. 3000)')
+		} else if (port.length === 0) {
+			astilectron.showErrorBox('Error!', 'Please enter a peer Port! (i.e. 3000)');
 		} else {
 			astilectron.sendMessage({name: 'connect', payload: [ip, port]});
 			astilectron.showMessageBox({message: 'Connecting to: tcp://' + ip + ':' + port, title: 'GEM : Go Encryption Messenger'});

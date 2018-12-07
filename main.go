@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	astilog "github.com/asticode/go-astilog"
-	"github.com/phayes/freeport"
 	"github.com/pkg/errors"
-	"github.com/thibran/pubip"
+	"log"
+	"math/rand"
+	"time"
 )
 
 var (
@@ -32,21 +32,26 @@ func main() {
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
 
-			// Sets host as outward IP of port 3000 as TCP
-			IP, _ := pubip.NewMaster().Address()
-			port, _ := freeport.GetFreePort()
+			ip, err := outboundIP()
+			if err != nil {
+				log.Fatal(err)
+			}
 
-			l.SetIP(IP)
+			//portScanner()
+			rand.Seed(time.Now().Unix())
+			n := rand.Int() % len(openPorts)
+			port := openPorts[n]
+
+			l.SetIP(ip)
 			l.SetProtocol("tcp")
-			l.SetPort(fmt.Sprintf("%v", port))
+			l.SetPort(port)
+			initListener(l.port, l.ip, l.protocol, "")
 
 			go func() {
-				if err := bootstrap.SendMessage(w, "ip", IP); err != nil {
+				if err := bootstrap.SendMessage(w, "ip", ip); err != nil {
 					return
 				}
-			}()
 
-			go func() {
 				if err := bootstrap.SendMessage(w, "port", port); err != nil {
 					return
 				}

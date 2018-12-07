@@ -86,6 +86,16 @@ input:focus, textarea:focus, select:focus {
 	background-color:#cf5c52
 }
 
+.port-btn {
+	-webkit-app-region:no-drag;
+	background-color:#ee5fd1;
+	margin-left:12px
+}
+
+.port-btn:hover {
+	background-color:#d452ba
+}
+
 .add {
 	-webkit-app-region:no-drag;
 	background-color:#5de97b;
@@ -224,6 +234,8 @@ input[type=text],textarea {
 }
 
 .inp-container {
+	-user-select: none;
+	-webkit-user-drag: none;
 	display:flex;
 	flex-direction:row;
 	flex-flow:wrap;
