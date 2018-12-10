@@ -10,6 +10,7 @@ var (
 	fPort    = 1
 	lPort    = 65535
 	password = ""
+	name     = ""
 )
 
 // errorString struct

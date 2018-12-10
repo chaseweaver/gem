@@ -69,7 +69,6 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 	case *messages.ChatMessage:
 		// Hash key from recieved password
 		key := []byte(createHash(password))
-		var dmsg string
 		dmsg, err := decryptMessage(msg.Message, key)
 		if err != nil {
 			return err
@@ -146,13 +145,15 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 			return
 		}
 
-		var msg, pwd string
-		if len(input) == 2 {
+		var msg, pwd, nme string
+		if len(input) == 3 {
 			msg = input[0]
 			pwd = input[1]
+			nme = input[2]
 		}
 
 		password = pwd
+		name = nme
 		key := []byte(createHash(pwd))
 		var emsg string
 		if emsg, err = encryptMessage(msg, key); err != nil {
