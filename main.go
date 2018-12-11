@@ -40,15 +40,11 @@ func main() {
 			}
 
 			ip := string(body)
+			_, port, _ := outboundIP()
 			if rerr != nil {
-				ip, _, _ = outboundIP()
+				ip, port, _ = outboundIP()
 			}
 			defer resp.Body.Close()
-
-			port := initPort
-			if !isPortOpen("tcp", ip, string(port)) {
-				port = uint16(random(int(fport), int(lport)))
-			}
 
 			l.SetIP(ip)
 			l.SetProtocol("tcp")

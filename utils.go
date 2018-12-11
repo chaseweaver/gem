@@ -53,7 +53,7 @@ func isPortOpen(protocol, host, port string) bool {
 
 // outboundIP() (string, error)
 // Returns public IP address
-func outboundIP() (string, int, error) {
+func outboundIP() (string, uint16, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
 		return "", 0, err
@@ -66,7 +66,7 @@ func outboundIP() (string, int, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	return localAddr[0:idx], port, nil
+	return localAddr[0:idx], uint16(port), nil
 }
 
 func random(min, max int) int {
