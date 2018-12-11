@@ -45,9 +45,9 @@ func main() {
 			}
 			defer resp.Body.Close()
 
-			_, port, err := outboundIP()
-			if err != nil {
-				log.Fatal(err)
+			port := initPort
+			if !isPortOpen("tcp", ip, string(port)) {
+				port = uint16(random(int(fport), int(lport)))
 			}
 
 			l.SetIP(ip)

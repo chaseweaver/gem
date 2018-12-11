@@ -1,14 +1,17 @@
 package main
 
 import (
+	"math/rand"
 	"net"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var (
-	fPort    = 1
-	lPort    = 65535
+	initPort = uint16(3074)
+	fport    = uint16(27014)
+	lport    = uint16(27050)
 	password = ""
 )
 
@@ -40,7 +43,7 @@ func (e *errorString) Error() string {
 // isPortOpen(string, string, string) bool
 // Checks if a host+port is open, closes after successful check
 func isPortOpen(protocol, host, port string) bool {
-	conn, err := net.Listen(protocol, net.JoinHostPort(host, port))
+	conn, err := net.Dial(protocol, net.JoinHostPort(host, port))
 	if err != nil {
 		return false
 	}
@@ -64,4 +67,9 @@ func outboundIP() (string, int, error) {
 		return "", 0, err
 	}
 	return localAddr[0:idx], port, nil
+}
+
+func random(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max-min) + min
 }

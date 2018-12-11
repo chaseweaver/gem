@@ -36,8 +36,8 @@ func (l *listener) SetIP(ip string) {
 	l.ip = ip
 }
 
-func (l *listener) SetPort(p int) {
-	l.port = uint16(p)
+func (l *listener) SetPort(p uint16) {
+	l.port = p
 }
 
 func (l *listener) SetHost(h string) {
