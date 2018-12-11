@@ -5,8 +5,9 @@
 body,html {
 	-webkit-app-region:drag;
 	-webkit-font-smoothing:antialiased;
+	-ms-overflow-style: none;
 	-webkit-text-size-adjust:100%;
-	font-family:Avenir;
+	font-family: 'Roboto', sans-serif;
 	height:100%;
 	overflow:hidden;
 	transition:all .5s
@@ -143,7 +144,8 @@ input:focus, textarea:focus, select:focus {
 	transition:.4s;
 	user-select:none;
 	vertical-align:middle;
-	width:38px
+	width:38px;
+	-webkit-app-region:no-drag;
 }
 
 .btn:active {
@@ -156,6 +158,8 @@ input:focus, textarea:focus, select:focus {
 
 .message-container {
 	-webkit-app-region:no-drag;
+	-ms-overflow-style: none;
+	overflow: -moz-scrollbars-none;
 	background-color:#fff;
 	border-radius:2em;
 	height:499px;
@@ -163,23 +167,14 @@ input:focus, textarea:focus, select:focus {
 	overflow-x: hidden;	
 	overflow-y:scroll;
 	padding-left:3%;
-	padding-right: 3%;
+	padding-right:3%;
 	padding-top:2%;
-	word-wrap: break-word;
-}
-
-.content-container {
-	display: flex;
-	flex-direction: column;
-	flex-flow: column;
-	align-items: start;
-	font-size: 8pt;
-	width: auto;
+	word-wrap:break-word
 }
 
 .content-container>p {
 	margin-top: -2px;
-	margin-left: 23px;
+	margin-left: 18px
 }
 
 .content-container {
@@ -188,15 +183,15 @@ input:focus, textarea:focus, select:focus {
 	flex-flow: column;
 	align-items: start;
 	font-size: 8pt;
-	width: auto;
+	width: auto
 }
 
 .content-container>.them {
-	margin-right: auto;
+	margin-right: auto
 }
 
 .content-container>.me {
-	margin-left: auto;
+	margin-left: auto
 }
 
 ul {
@@ -211,8 +206,8 @@ ul li {
 	display:inline-block;
 	margin-bottom:8px;
 	max-width:300px;
-	padding:20px;
-	font-size: 12pt;
+	padding: 12px 16px;
+	font-size: 12pt
 }
 
 .them {
@@ -262,7 +257,12 @@ input[type=text],textarea {
 	border-style:solid;
 	color:#555;
 	font-size:12pt;
-	overflow:scroll
+	overflow:scroll;
+	-user-select: none;
+	user-select: none;
+	-webkit-user-drag: none;
+	-ms-overflow-style: none;
+	-webkit-app-region:no-drag;
 }
 
 .inp-container {

@@ -1,4 +1,6 @@
 document.addEventListener('astilectron-ready', function() {
+	let peers = [""];
+
 	astilectron.onMessage(function(message) {
 		if (message.name === 'ip') {
 			document.getElementById('user-ip').innerHTML = 'IP: ' + message.payload;
@@ -26,15 +28,20 @@ document.addEventListener('astilectron-ready', function() {
 
 	document.getElementById('content-box').addEventListener('keyup', function(event) {
 		event.preventDefault();
-		let pwd = document.getElementById('pwd').value;
-		let nickname = document.getElementById('nickname').value;
+		if (event.keyCode === 13) {
 
-		if (pwd.length === 0 ) {
-			astilectron.showErrorBox('Error!', 'Please enter a password!');
-		} else if (nickname.length === 0) {
-			astilectron.showErrorBox('Error!', 'Please enter a nickname!');
-		} else {
-			if (event.keyCode === 13) {
+			if (this.value.length === 0) {
+				return;
+			} 
+
+			let pwd = document.getElementById('pwd').value;
+			let nickname = document.getElementById('nickname').value;
+
+			if (pwd.length === 0 ) {
+				astilectron.showErrorBox('Error!', 'Please enter a password!');
+			} else if (nickname.length === 0) {
+				astilectron.showErrorBox('Error!', 'Please enter a nickname!');
+			} else {
 				let me = document.createElement('li');
 				let container = document.createElement('div');
 
@@ -57,6 +64,13 @@ document.addEventListener('astilectron-ready', function() {
 		let ip = document.getElementById('peer-ip').value;
 		let port = document.getElementById('peer-port').value;
 		let pwd = document.getElementById('pwd').value;
+
+		if (peers.contains('tcp://'+ip+':'+port)) {
+			astilectron.showErrorBox('Error!', 'You are already connected to that peer!');
+			return
+		} else {
+			peers.push('tcp://'+ip+':'+port);
+		}
 
 		if (ip.length === 0) {
 			astilectron.showErrorBox('Error!', 'Please enter a peer IP!');
