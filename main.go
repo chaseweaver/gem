@@ -6,7 +6,9 @@ import (
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	astilog "github.com/asticode/go-astilog"
 	"github.com/pkg/errors"
+	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 var (
@@ -30,7 +32,20 @@ func main() {
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
 
-			ip, port, err := outboundIP()
+			resp, rerr := http.Get("https://api.ipify.org")
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			ip := string(body)
+			if rerr != nil {
+				ip, _, _ = outboundIP()
+			}
+			defer resp.Body.Close()
+
+			_, port, err := outboundIP()
 			if err != nil {
 				log.Fatal(err)
 			}

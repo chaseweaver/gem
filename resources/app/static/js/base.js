@@ -65,9 +65,8 @@ document.addEventListener('astilectron-ready', function() {
 		let port = document.getElementById('peer-port').value;
 		let pwd = document.getElementById('pwd').value;
 
-		if (peers.contains('tcp://'+ip+':'+port)) {
+		if (peers.includes('tcp://'+ip+':'+port)) {
 			astilectron.showErrorBox('Error!', 'You are already connected to that peer!');
-			return
 		} else {
 			peers.push('tcp://'+ip+':'+port);
 		}
