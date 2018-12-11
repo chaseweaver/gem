@@ -10,14 +10,20 @@ var (
 	fPort    = 1
 	lPort    = 65535
 	password = ""
-	name     = ""
 )
 
-// errorString struct
-// Used for implementation of an error message
-type errorString struct {
-	s string
-}
+type (
+
+	// Content handles message encoding
+	Content struct {
+		Name string `json:"name"`
+		Msg  string `json:"msg"`
+	}
+
+	errorString struct {
+		s string
+	}
+)
 
 // New (string) error
 // Returns an error that formats as the given text

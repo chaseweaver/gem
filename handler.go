@@ -69,11 +69,27 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 	case *messages.ChatMessage:
 		// Hash key from recieved password
 		key := []byte(createHash(password))
-		dmsg, err := decryptMessage(msg.Message, key)
+
+		arr := []byte(msg.Message)
+		var dat map[string]interface{}
+		json.Unmarshal([]byte(arr), &dat)
+
+		dmsg, err := decryptMessage(dat["msg"].(string), key)
 		if err != nil {
 			return err
 		}
-		bootstrap.SendMessage(w, "receive", dmsg)
+
+		dname, err := decryptMessage(dat["name"].(string), key)
+		if err != nil {
+			return err
+		}
+
+		dat["msg"] = dmsg
+		dat["name"] = dname
+
+		mdat, _ := json.Marshal(dat)
+
+		bootstrap.SendMessage(w, "receive", string(mdat[:]))
 	}
 	return nil
 }
@@ -123,11 +139,14 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 			return
 		}
 
-		var ip, port string
-		if len(peer) == 2 {
+		var ip, port, pwd string
+		if len(peer) == 3 {
 			ip = peer[0]
 			port = peer[1]
+			pwd = peer[2]
 		}
+
+		password = pwd
 
 		p, _ := strconv.Atoi(port)
 		peerAddress := network.FormatAddress(l.protocol, ip, uint16(p))
@@ -153,15 +172,26 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 		}
 
 		password = pwd
-		name = nme
 		key := []byte(createHash(pwd))
+
 		var emsg string
 		if emsg, err = encryptMessage(msg, key); err != nil {
 			payload = err.Error()
 		}
 
+		var ename string
+		if ename, err = encryptMessage(nme, key); err != nil {
+			payload = err.Error()
+		}
+
+		content := Content{
+			Name: ename,
+			Msg:  emsg,
+		}
+
+		mcontent, _ := json.Marshal(content)
 		ctx := network.WithSignMessage(context.Background(), true)
-		l.net.Broadcast(ctx, &messages.ChatMessage{Message: emsg})
+		l.net.Broadcast(ctx, &messages.ChatMessage{Message: string(mcontent[:])})
 	}
 	return
 }
