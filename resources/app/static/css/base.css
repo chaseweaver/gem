@@ -25,8 +25,7 @@ input:focus, textarea:focus, select:focus {
 	line-height:30%;
 	padding-bottom:3%;
 	padding-left:4%;
-	text-align:left;
-	width:84%
+	text-align:left
 }
 
 .description>p {

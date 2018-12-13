@@ -33,18 +33,27 @@ func main() {
 			w = ws[0]
 
 			resp, rerr := http.Get("https://api.ipify.org")
-
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Fatal(err)
 			}
 
 			ip := string(body)
-			_, port, _ := outboundIP()
 			if rerr != nil {
-				ip, port, _ = outboundIP()
+				ip, _, _ = outboundIP()
 			}
 			defer resp.Body.Close()
+
+			var port uint16
+			for _, v := range fport {
+				if isPortOpen("tcp", ip, string(v)) {
+					port = v
+				}
+			}
+
+			if port == 0 {
+				_, port, _ = outboundIP()
+			}
 
 			l.SetIP(ip)
 			l.SetProtocol("tcp")
