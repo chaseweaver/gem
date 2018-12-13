@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/perlin-network/noise/crypto"
+	"io/ioutil"
 	"strconv"
 
 	astilectron "github.com/asticode/go-astilectron"
@@ -76,11 +78,13 @@ func (state *chatPlugin) Receive(ctx *network.PluginContext) error {
 
 		dmsg, err := decryptMessage(dat["msg"].(string), key)
 		if err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
 			return err
 		}
 
 		dname, err := decryptMessage(dat["name"].(string), key)
 		if err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
 			return err
 		}
 
@@ -113,6 +117,7 @@ func initListener(port uint16, host, protocol string, peers ...string) {
 	var err error
 	l.net, err = l.builder.Build()
 	if err != nil {
+		bootstrap.SendMessage(w, "error", err.Error())
 		return
 	}
 	go l.net.Listen()
@@ -135,7 +140,7 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 
 		// Unmarshal JSON string
 		if err = json.Unmarshal([]byte(m.Payload), &peer); err != nil {
-			payload = err.Error()
+			bootstrap.SendMessage(w, "error", err.Error())
 			return
 		}
 
@@ -155,12 +160,57 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 			l.net.Bootstrap(peerAddress)
 		}
 
+	case "change-port":
+		var port string
+
+		// Unmarshal JSON string
+		if err = json.Unmarshal([]byte(m.Payload), &port); err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
+			return
+		}
+
+		var value uint64
+		if value, err = strconv.ParseUint(port, 10, 16); err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
+			return
+		}
+
+		l.net.Close()
+
+		bootstrap.SendMessage(w, "warn", fmt.Sprintf("Shutting down server: %v://%v:%v", l.protocol, l.ip, l.port))
+
+		l.SetPort(uint16(value))
+
+		bootstrap.SendMessage(w, "success", fmt.Sprintf("Listening for peers: %v://%v:%v", l.protocol, l.ip, l.port))
+		initListener(l.port, l.ip, l.protocol, "")
+
+	case "save":
+		var input []string
+
+		// Unmarshal JSON string
+		if err = json.Unmarshal([]byte(m.Payload), &input); err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
+			return
+		}
+
+		var filename, msgs string
+		if len(input) == 2 {
+			filename = input[0]
+			msgs = input[1]
+		}
+
+		data := []byte(msgs)
+		if err = ioutil.WriteFile(filename, data, 0644); err != nil {
+			bootstrap.SendMessage(w, "error", err.Error())
+			return
+		}
+
 	case "send":
 		var input []string
 
 		// Unmarshal JSON string
 		if err = json.Unmarshal([]byte(m.Payload), &input); err != nil {
-			payload = err.Error()
+			bootstrap.SendMessage(w, "error", err.Error())
 			return
 		}
 
@@ -176,12 +226,12 @@ func messageHandler(w *astilectron.Window, m bootstrap.MessageIn) (payload inter
 
 		var emsg string
 		if emsg, err = encryptMessage(msg, key); err != nil {
-			payload = err.Error()
+			bootstrap.SendMessage(w, "error", err.Error())
 		}
 
 		var ename string
 		if ename, err = encryptMessage(nme, key); err != nil {
-			payload = err.Error()
+			bootstrap.SendMessage(w, "error", err.Error())
 		}
 
 		content := Content{

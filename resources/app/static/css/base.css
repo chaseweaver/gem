@@ -2,6 +2,15 @@
 	background:#29a9ff
 }
 
+input[type='number'] {
+	-moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
 body,html {
 	-webkit-app-region:drag;
 	-webkit-font-smoothing:antialiased;
@@ -42,7 +51,8 @@ input:focus, textarea:focus, select:focus {
 .info-container {
 	display:flex;
 	justify-content:space-evenly;
-	width:96%
+	width:96%;
+	padding-top:5px
 }
 
 .info-container>p {
@@ -124,15 +134,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn {
-	background:#39b6ff;
-	border-bottom:solid 3px #2f94d0;
 	border-radius:50%;
-	box-shadow:0 2px 2px rgba(0,0,0,0.15);
 	color:#FFF;
+	height:38px;
+	width:38px;
 	display:inline-block;
 	font-size:17pt;
 	font-weight:700;
-	height:38px;
 	line-height:39px;
 	margin-left:2%;
 	margin-right:4%;
@@ -140,19 +148,38 @@ input:focus, textarea:focus, select:focus {
 	overflow:hidden;
 	text-align:center;
 	text-decoration:none;
-	transition:.4s;
+	transition: 0.4s all;
 	user-select:none;
 	vertical-align:middle;
-	width:38px;
 	-webkit-app-region:no-drag;
 }
 
-.btn:active {
-	-ms-transform:translateY(2px);
-	-webkit-transform:translateY(2px);
-	border-bottom:none;
-	box-shadow:0 0 1px rgba(0,0,0,0.15);
-	transform:translateY(2px)
+.input-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.log {
+	background: #c8ccd4;
+	margin-top: 20px;
+	margin-left: 14px !important;
+	margin-right: 0 !important;
+}
+
+.log:active {
+	background:#afb3b9;
+}
+
+.plus, .check {
+	background:#39b6ff;
+}
+
+.check {
+	margin-top: 34px;
+}
+
+.plus:active, .check:active {
+	background: #2f94d0
 }
 
 .message-container {
@@ -160,8 +187,8 @@ input:focus, textarea:focus, select:focus {
 	-ms-overflow-style: none;
 	overflow: -moz-scrollbars-none;
 	background-color:#fff;
-	border-radius:2em;
-	height:499px;
+	border-radius:1em;
+	height:528px;
 	max-width: 100%;
 	overflow-x: hidden;	
 	overflow-y:scroll;
@@ -171,9 +198,17 @@ input:focus, textarea:focus, select:focus {
 	word-wrap:break-word
 }
 
-.content-container>p {
+.left>p, .right>p {
 	margin-top: -2px;
-	margin-left: 18px
+	width: 100%
+}
+
+.left>p {
+	text-align: left !important;
+}
+
+.right>p {
+	text-align: right !important;
 }
 
 .content-container {
@@ -182,7 +217,13 @@ input:focus, textarea:focus, select:focus {
 	flex-flow: column;
 	align-items: start;
 	font-size: 8pt;
-	width: auto
+	width: auto;
+}
+
+.content-container>p {
+	width: 100%;
+	margin-top: -2px;
+	text-align: center;
 }
 
 .content-container>.them {
@@ -207,6 +248,30 @@ ul li {
 	max-width:300px;
 	padding: 12px 16px;
 	font-size: 12pt
+}
+
+.success {
+	background: #57da73;
+	color: #fff;
+	width: 100%;
+	max-width: 93%;
+	text-align: center;
+}
+
+.error {
+	background: #ff003c;
+	color: #fff;
+	width: 100%;
+	max-width: 93%;
+	text-align: center;
+}
+
+.warn {
+	background: #ffe44c;
+	color: #000;
+	width: 100%;
+	max-width: 93%;
+	text-align: center;
 }
 
 .them {
@@ -250,7 +315,7 @@ ul li {
 	width:98%
 }
 
-input[type=text],textarea {
+input[type=text], input[type=number], textarea {
 	background-color:#fff;
 	border-color:#fff;
 	border-style:solid;
@@ -262,6 +327,7 @@ input[type=text],textarea {
 	-webkit-user-drag: none;
 	-ms-overflow-style: none;
 	-webkit-app-region:no-drag;
+	width: 396px;
 }
 
 .inp-container {
@@ -295,6 +361,16 @@ input[type=text],textarea {
 .password {
 	margin-top:24px;
 	width:92%
+}
+
+.user-ip {
+	margin-top:24px;
+	width: 42%;
+}
+
+.user-port {
+	margin-top:24px;
+	width: 27%;
 }
 
 .inp .label {

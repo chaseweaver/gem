@@ -62,10 +62,12 @@ func main() {
 
 			go func() {
 				if err := bootstrap.SendMessage(w, "ip", ip); err != nil {
+					bootstrap.SendMessage(w, "error", err.Error())
 					return
 				}
 
 				if err := bootstrap.SendMessage(w, "port", port); err != nil {
+					bootstrap.SendMessage(w, "error", err.Error())
 					return
 				}
 			}()
@@ -83,7 +85,7 @@ func main() {
 				HasShadow:       astilectron.PtrBool(true),
 				Fullscreenable:  astilectron.PtrBool(false),
 				Center:          astilectron.PtrBool(true),
-				Height:          astilectron.PtrInt(600),
+				Height:          astilectron.PtrInt(632),
 				Width:           astilectron.PtrInt(900),
 			},
 		}},

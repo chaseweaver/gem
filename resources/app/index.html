@@ -19,7 +19,7 @@
 					<p>1. Give yourself a name</p>
 					<p>2. Enter Peer IP + Peer Port</p>
 					<p>3. Enter a cryptographic password</p>
-					<p>?. No connection? Forward (3074, 27014-27050)!</p>
+					<p>4. No luck? Try forwarding a custom port!</p>
 				</div>
 				<div class="inp-container">
 					<label for="inp" class="inp nickname">
@@ -33,26 +33,36 @@
 						<span class="border"></span>
 					</label>
 					<label for="inp" class="inp port">
-						<input type="text" id="peer-port" placeholder="&nbsp;">
+						<input type="number" id="peer-port" placeholder="&nbsp;">
 						<span class="label">Peer Port</span>
 						<span class="border"></span>
 					</label>
-					<div class="btn" id="connect">+</div>
+					<div class="btn plus" id="connect">+</div>
 					<label for="inp" class="inp password">
 						<input type="text" id="pwd" placeholder="&nbsp;">
 						<span class="label">Password</span>
 						<span class="border"></span>
 					</label>
-				</div>
-				<div class="info-container">
-					<p id="user-ip">&nbsp;</p>
-					<p id="user-port">&nbsp;</p>
+					<label for="inp" class="inp user-ip">
+						<input type="text" id="user-ip" placeholder="&nbsp;" readonly>
+						<span class="label">Your IP</span>
+						<span class="border"></span>
+					</label>
+					<label for="inp" class="inp user-port">
+						<input type="number" id="user-port" placeholder="&nbsp;">
+						<span class="label">Your Port</span>
+						<span class="border"></span>
+					</label>
+					<div class="btn check" id="check">#</div>
 				</div>
 			</div>
 			<div class="frame-container-right">
 				<div class="textbox-container">
-					<ul class="message-container" id='message-container'></ul>
-					<input type="text" id="content-box" class="content-box" placeholder="Type Message">
+					<ul class="message-container" id="message-container"></ul>
+					<div class="input-container">
+						<input type="text" id="content-box" class="content-box" placeholder="Type Message">
+						<div class="btn log" id="log">!</div>
+					</div>
 				</div>
 			</div>
 		</div>
